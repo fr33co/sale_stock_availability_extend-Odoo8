@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_order_form_inherit_extend" model="ir.ui.view">
+            <field name="name">sale.order.form.sale.stock</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock.view_order_form_inherit"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="replace">
+                       <field name="product_id"
+                       context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                       groups="base.group_user" 
+                       on_change="product_id_change_with_wh(parent.pricelist_id,product_id,product_uom_qty,False,product_uos_qty,False,name,parent.partner_id, False, True, parent.date_order, product_packaging, parent.fiscal_position, False, parent.warehouse_id, virtual_available2, context)"/>
+                   </xpath>
+                    
+                   <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="attributes">
+                        <attribute name="domain">[('company_id', 'in', [parent.warehouse_id])]</attribute>
+                    </xpath>
+                </data>
+           </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_order_stock_form_extend">
+            <field name="name">sale.order.form.inherit</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale_stock_availability.view_order_stock_form"/>
+            <field name="arch" type="xml">
+                            
+                <xpath expr="//field[@name='order_line']/tree/field[@name='virtual_available']" position="replace">
+                    <field name="virtual_available" invisible="1" readonly="0" groups="sale_stock_availability.see_stock_value" attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <field name="virtual_available2" on_change="product_id_change_with_wh(parent.pricelist_id,product_id,product_uom_qty,False,product_uos_qty,False,name,parent.partner_id, False, True, parent.date_order, product_packaging, parent.fiscal_position, False, parent.warehouse_id, virtual_available2, context)" invisible="0" readonly="0" attrs="{'invisible':[('state','!=','draft')]}"/>
+                </xpath>
+            
+                <xpath expr="//field[@name='order_line']/form//field[@name='virtual_available']" position="replace">
+                    <field name="virtual_available" invisible="1" readonly="0" groups="sale_stock_availability.see_stock_value" attrs="{'invisible':[('state','!=','draft')]}"/>
+                    <field name="virtual_available2" on_change="product_id_change_with_wh(parent.pricelist_id,product_id,product_uom_qty,False,product_uos_qty,False,name,parent.partner_id, False, True, parent.date_order, product_packaging, parent.fiscal_position, False, parent.warehouse_id, virtual_available2, context)" invisible="0" readonly="0"  groups="sale_stock_availability.see_stock_value" attrs="{'invisible':[('state','!=','draft')]}"/>
+                </xpath>           
+                
+            </field>
+        </record>
+
+    </data>
+</openerp>
