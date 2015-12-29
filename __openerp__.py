@@ -10,10 +10,11 @@
     'author': 'Angel A. Guadarrama B.',
     'website': 'https://github.com/fr33co',
     'depends': [
-        'sale_stock_availability'
+        'sale_stock_availability',
     ],
     'data': [
         'views/sale_view.xml',
+        'views/product_view.xml',
         ],
     'installable': True,
 }
